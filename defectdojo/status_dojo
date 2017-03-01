@@ -1,0 +1,45 @@
+#!/bin/bash
+# 2017-03-01 by Chris Holt (@humor4fun)
+# Heartbeat tests for the Dojo services
+
+check_site () 
+{
+# $1 should be the test id
+# $2 should be the URL
+# $3 should be the search term
+	NC='\033[0m' #no color
+	RED='\033[1;31m' #red
+	GREEN='\033[0;32m' #green	
+
+	printf "Test %s: " $1	
+	if (( `curl "$2" -s -S --head 2>&1 | grep -c "$3"` > 0 ))
+	 then
+		printf "${GREEN}OK${NC}\n"
+		return 1 
+	else
+		printf "${RED}Error\n!!\tRequest on: %s\n!!\tExpected Result: %s\n${NC}" "$2" "$3"
+		return 0
+	fi
+}
+
+# is django responding?
+check_site "1.1" "http://127.0.0.1:8000" "HTTP/1.0 302"
+check_site "1.2" "http://127.0.0.1:8000/login?next=/" "HTTP/1.0 200"
+check_site "1.3" "https://127.0.0.1:8000" "curl: (35)"
+check_site "1.4" "https://127.0.0.1:8000/login?next=/" "curl: (35)"
+
+check_site "2.1" "http://localhost:8000" "HTTP/1.0 302"
+check_site "2.2" "http://localhost:8000/login?next=/" "HTTP/1.0 200"
+check_site "2.3" "https://localhost:8000" "curl: (35)"
+check_site "2.4" "https://localhost:8000/login?next=/" "curl: (35)"
+
+# is nginx responding?
+check_site "3.1" "http://127.0.0.1" "HTTP/1.1 301"
+check_site "3.2" "http://127.0.0.1/login?next=/" "HTTP/1.1 301"
+check_site "3.3" "https://127.0.0.1" "curl: (51)"
+check_site "3.4" "https://127.0.0.1/login?next=/" "curl: (51)"
+
+check_site "4.1" "http://your.domain.com" "HTTP/1.1 301"
+check_site "4.2" "http://your.domain.com/login?next=/" "HTTP/1.1 301"
+check_site "4.3" "https://your.domain.com" "HTTP/1.1 302"
+check_site "4.4" "https://your.domain.com/login?next=/" "HTTP/1.1 200"
