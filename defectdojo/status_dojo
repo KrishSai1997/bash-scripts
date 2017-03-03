@@ -1,6 +1,9 @@
 #!/bin/bash
 # 2017-03-01 by Chris Holt (@humor4fun)
 # Heartbeat tests for the Dojo services
+#
+# Setup this script by running `echo your.domain.com > domain` in the same directory
+# Call this script using ./status_dojo.sh
 
 check_site () 
 {
@@ -22,6 +25,8 @@ check_site ()
 	fi
 }
 
+DOMAIN=`cat domain`
+
 # is django responding?
 check_site "1.1" "http://127.0.0.1:8000" "HTTP/1.0 302"
 check_site "1.2" "http://127.0.0.1:8000/login?next=/" "HTTP/1.0 200"
@@ -39,7 +44,7 @@ check_site "3.2" "http://127.0.0.1/login?next=/" "HTTP/1.1 301"
 check_site "3.3" "https://127.0.0.1" "curl: (51)"
 check_site "3.4" "https://127.0.0.1/login?next=/" "curl: (51)"
 
-check_site "4.1" "http://your.domain.com" "HTTP/1.1 301"
-check_site "4.2" "http://your.domain.com/login?next=/" "HTTP/1.1 301"
-check_site "4.3" "https://your.domain.com" "HTTP/1.1 302"
-check_site "4.4" "https://your.domain.com/login?next=/" "HTTP/1.1 200"
+check_site "4.1" "http://"$DOMAIN"" "HTTP/1.1 301"
+check_site "4.2" "http://"$DOMAIN"?next=/" "HTTP/1.1 301"
+check_site "4.3" "https://"$DOMAIN"" "HTTP/1.1 302"
+check_site "4.4" "https://"$DOMAIN"/login?next=/" "HTTP/1.1 200"
