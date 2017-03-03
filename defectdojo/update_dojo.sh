@@ -59,12 +59,12 @@ echo -e "=====================================================\n" >> "$LOGFILE"
 
 echo -e "=====================================================" >> "$LOGFILE"
 echo -e "Fetching updated scripts:\n" >> "$LOGFILE"
-echo -e "curl -O https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/update_dojo.sh > update_dojo\n" >> $LOGFILE
-curl -O https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/update_dojo.sh > update_dojo | tee -a "$LOGFILE"
-echo -e "curl -O https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/status_dojo.sh > status_dojo\n" >> $LOGFILE
-curl -O https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/status_dojo.sh > status_dojo | tee -a "$LOGFILE"
-echo -e "curl -O https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/startup_dojo.sh > startup_dojo\n" >> $LOGFILE
-curl -O https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/startup_dojo.sh > startup_dojo | tee -a "$LOGFILE"
+echo -e "curl https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/update_dojo.sh -o update_dojo\n" >> $LOGFILE
+curl https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/update_dojo.sh -o update_dojo | tee -a "$LOGFILE"
+echo -e "curl https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/status_dojo.sh -o status_dojo\n" >> $LOGFILE
+curl https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/status_dojo.sh -o status_dojo | tee -a "$LOGFILE"
+echo -e "curl https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/startup_dojo.sh -o startup_dojo\n" >> $LOGFILE
+curl https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/startup_dojo.sh -o startup_dojo | tee -a "$LOGFILE"
 echo -e "=====================================================\n" >> "$LOGFILE"
 
 #Next we need to restart gunicorn and celery. Google showed me these commands, but I haven't proved that they work, so I'll just perform a reboot and let the startup script handle restarting these services
