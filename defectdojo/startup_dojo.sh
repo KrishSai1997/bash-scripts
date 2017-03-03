@@ -18,4 +18,4 @@ gnome-terminal --working-directory=/home/dojo/django-DefectDojo --window-with-pr
 sleep 5
 
 #run heartbeat tests for django and nginx
-gnome-terminal --working-directory=/home/dojo/ --window-with-profile=cronterm --display=:0.0 --execute ./status-dojo
+gnome-terminal --working-directory=/home/dojo/ --window-with-profile=cronterm --display=:0.0 --execute ./status_dojo
