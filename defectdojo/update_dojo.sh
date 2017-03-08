@@ -54,7 +54,8 @@ echo -e "=====================================================\n" >> "$LOGFILE"
 
 echo -e "=====================================================" >> "$LOGFILE"
 echo -e "./manage.py collectstatic:\n" >> "$LOGFILE"
-./manage.py collectstatic --noinput | tee -a "$LOGFILE"
+cd ..
+sudo ./manage.py collectstatic --noinput | tee -a "$LOGFILE"
 echo -e "=====================================================\n" >> "$LOGFILE"
 
 echo -e "=====================================================" >> "$LOGFILE"
