@@ -60,7 +60,7 @@ echo -e "=====================================================\n" >> "$LOGFILE"
 
 echo -e "=====================================================" >> "$LOGFILE"
 echo -e "Installing any new python components:\n" >> "$LOGFILE"
-sudo read d < <(curl -s -S https://raw.githubusercontent.com/OWASP/django-DefectDojo/master/setup.py | sed "s/[',> \t]//g" | sed '/install_requires=\[/,/\],/!d;s/install_requires=\[//g;s/\[//g;s/\]//g;s/=.*//1;/dependency_links$/,$d;s/[0-9]\.[0-9]//g' | sed ':a;N;$!ba;s/\n/ /g') && pip install -r $d | tee -a "$LOGFILE"
+sudo read d < <(curl -s -S https://raw.githubusercontent.com/OWASP/django-DefectDojo/master/setup.py | sed "s/[',> \t]//g" | sed '/install_requires=\[/,/\],/!d;s/install_requires=\[//g;s/\[//g;s/\]//g;s/=.*//1;/dependency_links$/,$d;s/[0-9]\.[0-9]//g' | tail -n 2 | sed ':a;N;$!ba;s/\n/ /g') && sudo pip install --ignore-installed $d | tee -a "$LOGFILE"
 echo -e "=====================================================\n" >> "$LOGFILE"
 
 echo -e "=====================================================" >> "$LOGFILE"
