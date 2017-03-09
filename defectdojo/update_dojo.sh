@@ -71,6 +71,7 @@ echo -e "curl https://raw.githubusercontent.com/humor4fun/bash-scripts/master/de
 curl https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/status_dojo.sh -o status_dojo | tee -a "$LOGFILE"
 echo -e "curl https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/startup_dojo.sh -o startup_dojo\n" >> $LOGFILE
 curl https://raw.githubusercontent.com/humor4fun/bash-scripts/master/defectdojo/startup_dojo.sh -o startup_dojo | tee -a "$LOGFILE"
+chmod 755 *_dojo
 echo -e "=====================================================\n" >> "$LOGFILE"
 
 #Next we need to restart gunicorn and celery. Google showed me these commands, but I haven't proved that they work, so I'll just perform a reboot and let the startup script handle restarting these services
