@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Rotate through the MD devices and initiate a scrub (read-only) test, executes MD devices in random order
 # starting the next MD device every 5 days
