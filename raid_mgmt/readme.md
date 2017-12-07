@@ -5,3 +5,6 @@ Collection of scripts that attempt to protect data and drive loss on RAID system
 1. Download a script via `wget https://github.com/humor4fun/bash-scripts/new/master/raid_mgmt/script.sh -O script.sh`
 2. Add execution bit via `chmod +x script.sh` 
 3. Install them to `/etc/rc.local` or your other job scheduler
+
+# Warning
+If you run `raid_scrubbing.sh` ensure that you background the process or else it will block permanently.
