@@ -15,7 +15,7 @@ do
   do
     echo check > /sys/block/$disk/md/sync_action
     cat /proc/mdstat
-    echo Running read test of $disk. Have a nice day.
+    echo "Running read test of $disk. Have a nice day."
     sleep 2d
    done
    
