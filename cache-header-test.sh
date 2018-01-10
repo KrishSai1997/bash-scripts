@@ -34,14 +34,15 @@ while read site; do
   file="$dir/$site.head"
   res=0
 
-  #check if we've already fetch this site, if not get it.
-  test ! -e "$file" && $(curl --head "$site" -o "$file" -m $((timeout)) -s -L)
-  res=$?
+  #check if we have the site headers in the local cache, if not get it.
+  if [ ! -e "$file" ]; then
+   $(curl --head "$site" -o "$file" -m $((timeout)) -s -L)
+   res=$?
+  fi
 
-      #use this line instead of the one below it to debug for connection errors
-      #if [ $((res)) -gt 0 ]; then
-  #test curl result and skip if Couldn't resolve host(6), empty reply from server(52), Failed to Connect(7), Operation Timeout(28)
-  if [ "$res" -eq "6" ] || [ "$res" -eq "52" ] || [ "$res" -eq "7" ] || [ "$res" -eq "28" ];then
+  #test if curl reported an error
+  if [ $((res)) -gt 0 ]; then
+    #Couldn't resolve host(6), empty reply from server(52), Failed to Connect(7), Operation Timeout(28), unsupported protocol(1) -> this occurs when the site headers were already cached
     printf "\n\033[0;31m$site\033[0m failed. Curl($res)\n"
     printf "%s\n" >> $errors
   elif [ -e "$file" ]; then
@@ -63,7 +64,8 @@ while read site; do
 done <"$sitelist"
 
 # Print results table
-printf "\nResults with %ss Timeout\n -----------------------\n" $(($timeout))
+printf "\nResults with %ss Timeout\n -----------------------\n" $((timeout))
+printf "Tested the Alexa Top %s sites\n" $((alexa))
 printf "| %s\t Pragma & C-C\t|\n" $(wc -l < "$pcccount")
 printf "| %s\t Pragma Only\t|\n" $(wc -l < "$pcount")
 printf "| %s\t C-C Only\t|\n" $(wc -l < "$cccount")
