@@ -63,7 +63,7 @@ while read site; do
 done <"$sitelist"
 
 # Print results table
-printf "\nResults with %ss Timout\n -----------------------\n" $(($timeout))
+printf "\nResults with %ss Timeout\n -----------------------\n" $(($timeout))
 printf "| %s\t Pragma & C-C\t|\n" $(wc -l < "$pcccount")
 printf "| %s\t Pragma Only\t|\n" $(wc -l < "$pcount")
 printf "| %s\t C-C Only\t|\n" $(wc -l < "$cccount")
