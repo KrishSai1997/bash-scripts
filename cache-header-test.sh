@@ -64,8 +64,7 @@ while read site; do
 done <"$sitelist"
 
 # Print results table
-printf "\nResults with %ss Timeout\n -----------------------\n" $((timeout))
-printf "Tested the Alexa Top %s sites\n" $((alexa))
+printf "\nTested the Alexa Top %s sites. Results with %ss Timeout\n -----------------------\n\n" $((alexa)) $((timeout))
 printf "| %s\t Pragma & C-C\t|\n" $(wc -l < "$pcccount")
 printf "| %s\t Pragma Only\t|\n" $(wc -l < "$pcount")
 printf "| %s\t C-C Only\t|\n" $(wc -l < "$cccount")
