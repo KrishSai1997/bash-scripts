@@ -9,13 +9,14 @@ pcount="$dir/P.txt"
 cccount="$dir/CC.txt"
 pcccount="$dir/P+CC.txt"
 ncount="$dir/xP+CC.txt"
+errors="$dir/errors.txt"
 alexa=$1
 timeout=10
 
 #clear old dataset
 #rm -r $dir -> will delete all the fetched head data as well, but is quicker.
 mkdir -p $dir
-files=( $pcount $cccount $pcccount $ncount )
+files=( $pcount $cccount $pcccount $ncount $errors )
 for i in "${files[@]}"
 do
   test -e $i && rm $i
@@ -31,29 +32,42 @@ rm top-1m.csv*
 #crawl the site list
 while read site; do
   file="$dir/$site.head"
+  res=0
 
   #check if we've already fetch this site, if not get it.
-  test ! -e "$file" && $(curl --head "$site" -o "$file" -m $((timeout)) -L)
+  test ! -e "$file" && $(curl --head "$site" -o "$file" -m $((timeout)) -s -L)
+  res=$?
 
-  if [ $(cat "$file" | grep -i -c "Pragma") -gt 0 ]; then
-    if [ $(cat "$file" | grep -i -c "Cache-Control") -gt 0 ]; then
-      printf "%s\n" "$site" >> "$pcccount"
+      #use this line instead of the one below it to debug for connection errors
+      #if [ $((res)) -gt 0 ]; then
+  #test curl result and skip if Couldn't resolve host(6), empty reply from server(52), Failed to Connect(7), Operation Timeout(28)
+  if [ "$res" -eq "6" ] || [ "$res" -eq "52" ] || [ "$res" -eq "7" ] || [ "$res" -eq "28" ];then
+    printf "\n\033[0;31m$site\033[0m failed. Curl($res)\n"
+    printf "%s\n" >> $errors
+  elif [ -e "$file" ]; then
+    if [ $(cat "$file" | grep -i -c "Pragma") -gt 0 ]; then
+      if [ $(cat "$file" | grep -i -c "Cache-Control") -gt 0 ]; then
+        printf "%s\n" "$site" >> "$pcccount"
+      else
+        printf "%s\n" "$site" >> "$pcount"
+      fi
     else
-      printf "%s\n" "$site" >> "$pcount"
+      if [ $(cat "$file" | grep -i -c "Cache-Control") -gt 0 ]; then
+        printf "%s\n" "$site" >> "$cccount"
+      else
+        printf "%s\n" "$site" >> "$ncount"
+      fi
     fi
-  else
-    if [ $(cat "$file" | grep -i -c "Cache-Control") -gt 0 ]; then
-      printf "%s\n" "$site" >> "$cccount"
-    else
-      printf "%s\n" "$site" >> "$ncount"
-    fi
+    printf "."
   fi
 done <"$sitelist"
 
 # Print results table
-printf "Results with %ss Timout\n -----------------------\n" $(($timeout))
+printf "\nResults with %ss Timout\n -----------------------\n" $(($timeout))
+printf "| %s\t Pragma & C-C\t|\n" $(wc -l < "$pcccount")
 printf "| %s\t Pragma Only\t|\n" $(wc -l < "$pcount")
 printf "| %s\t C-C Only\t|\n" $(wc -l < "$cccount")
-printf "| %s\t Pragma & C-C\t|\n" $(wc -l < "$pcccount")
 printf "| %s\t Neither\t|\n" $(wc -l < "$ncount")
+printf "|  .......... .........\t|\n"
+printf "| %s\t \033[0;31merrors\033[0m\t\t|\n" $(wc -l < "$errors")
 printf " -----------------------\n"
