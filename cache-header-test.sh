@@ -1,7 +1,7 @@
 #!/bin/bash
 # Fetch the top X Alexa sites and crawl them, fetching HEAD only. Then test the results to see if they are using Pragma and Cache-Control headers.
-# change the the length of the list by setting a number 1 to 1,000,000 in the first parameter
-# ./cache-header-test 10 -> tests the top 10 sites only
+#
+# This could easily be changed to be more generic by abstracting the headers searched for into cmd parameters.
 
 sitelist="$dir/sitelist.txt"
 listlen=10
@@ -15,8 +15,17 @@ timedout="$dir/timedout.txt"
 timeout=10
 exclude="$dir/exclude.txt"
 excluded="$dir/excluded.txt"
-rm $exclude $excluded
 skip=0
+
+printf "cache-header-test by Chris Holt\n"
+
+#clear old dataset
+files=( $pcount $cccount $pcccount $ncount $errors $exclude $excluded )
+for i in "${files[@]}"
+do
+  test -e $i && rm $i
+  touch $i
+done
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -45,7 +54,8 @@ while [[ $# -gt 0 ]]; do
       mkdir -p $dir
       #Get Alexa top 1000 sites
       #source: https://gist.github.com/evilpacket/3628941
-      wget -q http://s3.amazonaws.com/alexa-static/top-1m.csv.zip;unzip top-1m.csv.zip
+      wget -q http://s3.amazonaws.com/alexa-static/top-1m.csv.zip
+      unzip -q top-1m.csv.zip
       awk -F ',' '{print $2}' top-1m.csv | head -$((listlen)) > $sitelist
       rm top-1m.csv*
       shift
@@ -64,15 +74,9 @@ while [[ $# -gt 0 ]]; do
   shift # past argument or value
 done
 
-#clear old dataset
-files=( $pcount $cccount $pcccount $ncount $errors )
-for i in "${files[@]}"
-do
-  test -e $i && rm $i
-  touch $i
-done
 sort -u "$excluded" > "$exclude"
 
+printf "Testing %s domains.\n\nKey:\n\t. Success\n\t\033[0;31m#\033[0m cURL Error Code\n\t\033[0;35mx\033[0m Excluded\n" $((listlen))
 #crawl the site list
 while read site; do
   file="$dir/$site.head"
@@ -90,11 +94,12 @@ while read site; do
       #Couldn't resolve host(6), empty reply from server(52), Failed to Connect(7), Operation Timeout(28), unsupported protocol(1) -> this occurs when the site headers were already cached
       #printf "\n\033[0;31m%s\033[0m failed. Curl(%s)\n" "$site" "$res"
       printf "\033[0;31m%s\033[0m" "$res"
-      printf "%s\n" "$site" >> "$errors"
       skip=$((skip + 1))
       if [ $((res)) -eq 28 ]; then
         #store a separate list of sites that timed out, these might be re-tested
         printf "%s\n" "$site" >> "$timedout"
+      else
+        printf "%s\n" "$site" >> "$errors"
       fi
     elif [ -e "$file" ]; then
       if [ $(cat "$file" | grep -i -c "Pragma") -gt 0 ]; then
@@ -128,8 +133,33 @@ printf "| %s\t Neither\t|\n" $(wc -l < "$ncount")
 printf "|  .......... .........\t|\n"
 printf "| %s\t \033[0;36mSkipped\033[0m\t|\n" $((skip))
 printf "| %s\t \033[0;31merror\033[0m\t\t|\n" $(wc -l < "$errors")
+printf "| %s\t \033[0;31mtimed out\033[0m\t|\n" $(wc -l < "$timedout")
 printf "| %s\t \033[0;35mexcluded\033[0m\t|\n" $(wc -l < "$exclude")
 printf " -----------------------\n"
 
 errors=$(wc -l < $errors)
 exit $((listlen - errors))
+
+
+
+#Iterate over the Alexa top X list, each time skipping sites that throw errors. Repeat with longer and longer timeouts for sites that are slow. This has not been tested but it should work.
+
+#to=1
+#sites=21000
+
+#iteration(){
+  #cat cache-header-test/errors.txt >> errors.list
+  #sort -u errors.list > exclude.list
+  #cat cache-header-test/timedout.txt >> timedout.list
+  #sort -u timedout.list > retest.list
+  #to=$(( to + 4 ))
+  #cache-header-test.sh --list retest.txt --timeout $to
+#}
+
+#cache-header-test.sh --alexa $sites --timeout $to #first round
+#iteration #retest the first set
+#while [ $(wc -l < retest.list) -gt 0 ]; do
+  #iteration #retest second+ times
+#done
+
+#cache-header-test.sh --alexa $sites --exclude exclude.list --timeout 1
