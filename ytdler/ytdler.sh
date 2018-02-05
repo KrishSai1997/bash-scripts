@@ -35,9 +35,9 @@ mkfile()
 	mkdir -p $( dirname "$1" ) && touch "$1"
 }
 
-folder="~/ytdler/dl"
-playlist="~/ytdler/todo.list"
-complete="~/ytdler/complete.list"
+folder="\~/ytdler/dl"
+playlist="\~/ytdler/todo.list"
+complete="\~/ytdler/complete.list"
 setup=0
 ex=1
 
