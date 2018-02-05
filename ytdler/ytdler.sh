@@ -16,17 +16,23 @@ message()
 
 install()
 {
+	message "If you didn't execute with root, this may not work..."
 	message "Installing dependancies if they do not exist."
-	sudo apt-get install curl ffmpeg mpv mplayer axel
+	apt-get install curl ffmpeg mpv mplayer axel
 
 	message "Installing youtube-dl from source."
-	sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
-	sudo chmod a+rx /usr/local/bin/youtube-dl
-	sudo ln -s /usr/local/bin/youtube-dl /usr/bin/youtube-dl
+	curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+	chmod a+rx /usr/local/bin/youtube-dl
+	ln -s /usr/local/bin/youtube-dl /usr/bin/youtube-dl
 
 	message "Updating youtube-dl database."
 	youtube-dl -U
 	exit 0
+}
+
+mkfile()
+{
+	mkdir -p $( dirname "$1" ) && touch "$1"
 }
 
 folder="~/ytdler/dl"
@@ -48,19 +54,23 @@ do
 			shift
 		;;
 		-o|--output)
-			completed="$2"
+			folder="$2"
 			shift
 		;;
 		-s|--setup)
 			install
 		;;
 		-h|--help)
-			printf "\nytdler is written by Chris Holt (@humor4fun)\nThis program takes in a list of youtube-dl supported URLs and will download all of them.\n\nUsage:\n\t-i | --input-list FILE \n\t\t\tFile that includes the list of URLs to download.\n\t-c | --completed-list FILE\n\t\t\tFile that will be written to when a URL is completed downloading.\n\t\t\tDefault: ~/ytdler/complete.list\n\t-o | --output FOLDER\n\t\t\tFolder that downloads will be stored in.\n\t\t\tDefault: ~/ytdler/dl\n\t-s | --setup\n\t\t\tInstall required tools and configure youtube-dl to execute when called from command line. Performs a database update.\n\t-h | --help\n\t\t\tPrints this help message."
+			printf "\nytdler is written by Chris Holt (@humor4fun)\nThis program takes in a list of youtube-dl supported URLs and will download all of them.\n\nUsage:\n\t-i | --input-list FILE \n\t\t\tFile that includes the list of URLs to download.\n\t\t\tDefault: ~/ytdler/todo.list\n\t-c | --completed-list FILE\n\t\t\tFile that will be written to when a URL is completed downloading.\n\t\t\tDefault: ~/ytdler/complete.list\n\t-o | --output FOLDER\n\t\t\tFolder that downloads will be stored in.\n\t\t\tDefault: ~/ytdler/dl\n\t-s | --setup\n\t\t\tInstall required tools and configure youtube-dl to execute when called from command line. Performs a database update.\n\t-h | --help\n\t\t\tPrints this help message.\n"
 			exit 0
 		;;
 	esac
 		shift # past argument or value
 done
+
+mkfile $folder
+mkfile $playlist
+mkfile $complete
 
 list=`head -n 1 "$playlist"`
 message "Starting Download of: $list"
