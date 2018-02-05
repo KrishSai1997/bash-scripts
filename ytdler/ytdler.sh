@@ -2,10 +2,6 @@
 
 # Download all videos/playlists specified in the local ytdl.list file. Completed playlists will be moved to 'complete.list'
 
-#TODO
-# move the two lists into input parameters
-# add help printout
-
 trap control_c INT # catch ctrl-c command
 control_c()
 {
