@@ -7,9 +7,13 @@ Given a list of URLs or Playlists, this script will repeatedly trigger `youtube-
 3. `./ytdler.sh --setup`
 
 ## Usage
+Default `./ytdler.sh -i todo.list`
 
-
-Default `./ytdler.sh -i input.list`
+Add a playlist to your download queue while the tool is running!
+```
+printf "https://www.youtube.com/playlist?list=PLwP_SiAcduifdsdfsfNnj8hM9EjtR3\n" >> todo.list
+printf "https://www.youtube.com/playlist?list=PLwP_Sisdfdsdfsd1siQq9NURBNnj8hM9EjtR3\n" >> todo.list
+```
 
 ## Options
 ```
@@ -29,10 +33,10 @@ Default `./ytdler.sh -i input.list`
 ```
 
 ## Sample Input Files
-input.list:
+todo.list:
 ```
-https://www.youtube.com/playlist?list=PLwP_SiAcdui0KVebT0mU9Apz359a4ubsC
-https://www.youtube.com/watch?v=vVhCtv55E9g&list=PL48ED3A2D823691E7
+https://www.youtube.com/playlist?list=PLwP_SiAcfdsdfdfsdfsdmU9Apz359a4ubsC
+https://www.youtube.com/playlist?list=PL48Esdfsdsdfsdfsdfds23691E7
 ```
 ## Notes
 This script was written and tested on a fresh installation of Debian 9.
