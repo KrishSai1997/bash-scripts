@@ -34,3 +34,9 @@ input.list:
 https://www.youtube.com/playlist?list=PLwP_SiAcdui0KVebT0mU9Apz359a4ubsC
 https://www.youtube.com/watch?v=vVhCtv55E9g&list=PL48ED3A2D823691E7
 ```
+## Notes
+This script was written and tested on a fresh installation of Debian 9.
+```
+user@ytdl:~$ uname -a
+Linux ytdl 4.9.0.4-amd64 #1 SMP Debian 4.9.65-3+deb9u1 (2017-12-23) x86_64 GNU/Linux
+```
