@@ -12,7 +12,7 @@ sort -u booklist.txt > books.list
 while read LIST
 do
   wget $LIST
-done < booklist.txt
+done < books.list
 
 #cleanup
 #rm booklist.txt books.list
