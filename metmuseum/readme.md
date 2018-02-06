@@ -1,3 +1,19 @@
+# Met Museum Scraper
+Download All the books hosted by Met Museum using a google search for resources hosted on their website
+
+## Installation
+1. Save metfromgoogle.sh to a file
+2. `chmod +x metfromgoogle.sh`
+3. `./metfromgoogle.sh --setup`
+
+## Usage
+Default `./metfromgoogle.sh `
+
+## Note
+Tested on OSX and Debian 9
+
+***
+
 # Met Museum Art Book Downloader
 Download PDFs of the "50 years of Met Books" published for free by the Met Museum.
 https://www.metmuseum.org/art/metpublications/titles-with-full-text-online
