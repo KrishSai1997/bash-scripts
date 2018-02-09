@@ -75,12 +75,12 @@ mkfile $complete
 list=`head -n 1 "$playlist"`
 message "Starting Download of: $list"
 
-while [ "$ex" -ne 0 ]
+while [ "$ex" -ne "0" ]
 do
 	youtube-dl --embed-subs --add-metadata --all-subs -i --external-downloader axel --external-downloader-args "-a -k -n 10" -o "$folder/%(playlist)s/%(title)s.%(ext)s" "$list"
 	ex="$?"
 
-	if [ "$ex" -ne 0 ]
+	if [ "$ex" -ne "0" ]
 	then
 		message "Download failed. Trying again."
 	fi
@@ -92,9 +92,10 @@ message "Item Complete"
 
 
 if [ `wc -l < "$playlist"` -eq 0 ] #file is empty
+then
 	message "Finished downloading all entries in $playlist"
 	exit 0
 else
 	message "Program reloading for next item."
-	ytdler -i $playlist -o $folder -c $complete #execute again because there is another line
+	./ytdler.sh -i $playlist -o $folder -c $complete #execute again because there is another line
 fi
