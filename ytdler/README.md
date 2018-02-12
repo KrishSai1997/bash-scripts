@@ -1,3 +1,6 @@
+# Defunct
+This functionality is built into youtube-dl.
+
 # ytdler
 Given a list of URLs or Playlists, this script will repeatedly trigger `youtube-dl` until each item in the list successfully completes. This might cause trouble if an item in a playlist is not able to be downloaded. The tool relies on `youtube-dl`'s reliability to correctly return an exit code of 0.
 
